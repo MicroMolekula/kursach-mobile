@@ -7,7 +7,7 @@ export const scheduleBudgetNotification = async (budget) => {
       body: `Вы превысили ваш месячный бюджет: ${budget} ₽`,
     },
     trigger: {
-      seconds: 10, // Напоминание через 10 секунд для теста
+      seconds: 10,
     },
   });
 };

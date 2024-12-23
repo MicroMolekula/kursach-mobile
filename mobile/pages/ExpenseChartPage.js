@@ -2,25 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { BarChart, LineChart } from 'react-native-chart-kit';
 import { getExpenses } from '../services/api';
+import {useFocusEffect} from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function ExpenseChartPage() {
   const [data, setData] = useState([]);
 
-  useEffect(() => {
-    fetchExpenses();
-  }, []);
-
-  const fetchExpenses = async () => {
-    try {
-      const expenses = await getExpenses();
-      setData(expenses);
-    } catch (error) {
-      console.error('Ошибка загрузки данных:', error);
-      setData([]); // В случае ошибки устанавливаем пустые данные
-    }
-  };
+  useFocusEffect(
+      React.useCallback(() => {
+        const fetchExpenses = async () => {
+          try {
+            const data = await getExpenses();
+            setData(data);
+          } catch (error) {
+            console.error('Failed to fetch expenses:', error);
+          }
+        };
+  
+        fetchExpenses();
+      }, [])
+    );
 
   const calculateCategoryData = () => {
     const categories = {};

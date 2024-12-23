@@ -1,14 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { getExpenses } from '../services/api';
 import ExpenseItem from '../components/ExpenseItem';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function ExpenseListPage() {
   const [expenses, setExpenses] = useState([]);
 
-  useEffect(() => {
-    fetchExpenses();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchExpenses = async () => {
+        try {
+          const data = await getExpenses();
+          setExpenses(data);
+        } catch (error) {
+          console.error('Failed to fetch expenses:', error);
+        }
+      };
+
+      fetchExpenses();
+    }, [])
+  );
 
   const fetchExpenses = async () => {
     const data = await getExpenses();
